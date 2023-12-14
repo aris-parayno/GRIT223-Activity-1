@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/parayna1/My Study/GRIT223/Rodents.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="968"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,14:mainRodents_Survey"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1.sql">-- Create a table named Rodents_Survey with the data fields
+CREATE TABLE Rodents_Survey (
+  year INT,
+  month INT,
+  day INT,
+  species VARCHAR(20),
+  weight INT
+);</sql><sql name="SQL 2.sql">-- Populate the table with 100 random records
+-- SQLite version 3.12 does not support the ELT function
+-- You need to use the CASE expression instead
+INSERT INTO Rodents_Survey
+SELECT
+  ABS(RANDOM() % (2023 - 2018 + 1)) + 2018 AS year, -- Random year between 2018 and 2023
+  ABS(RANDOM() % 12) + 1 AS month, -- Random month between 1 and 12
+  ABS(RANDOM() % 28) + 1 AS day, -- Random day between 1 and 28
+  CASE ABS(RANDOM() % 4) + 1 -- Random species from the list
+    WHEN 1 THEN 'mouse'
+    WHEN 2 THEN 'rat'
+    WHEN 3 THEN 'squirrel'
+    WHEN 4 THEN 'hamster'
+  END AS species,
+  ABS(RANDOM() % 500) + 1 AS weight -- Random weight between 1 and 500 grams
+FROM
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t1, -- 10 rows
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t2; -- 10 rows</sql><sql name="SQL 3.sql">SELECT * FROM Rodents_Survey</sql><sql name="SQL 4.sql">-- Select the year, month, day, species and weight columns from the table Rodents_Survey
+SELECT
+  year,
+  month,
+  day,
+  species,
+  -- Convert the weight from grams to milligrams by multiplying by 1000
+  weight * 1000 AS weight_in_mg
+FROM
+  Rodents_Survey;</sql><sql name="SQL 5.sql">-- Select the day, month, year, species and weight columns from the table Rodents_Survey
+-- where the weight is greater than 75 g
+SELECT
+  day,
+  month,
+  year,
+  species,
+  -- Convert the weight from grams to kilograms by dividing by 1000
+  weight / 1000.0 AS weight_in_kg
+FROM
+  Rodents_Survey
+WHERE
+  weight &gt; 75;</sql><sql name="SQL 6.sql">-- Select the day, month, year, species columns from the table Rodents_Survey
+-- where the month is 1, 5, or 7
+SELECT
+  day,
+  month,
+  year,
+  species
+FROM
+  Rodents_Survey
+WHERE
+  month IN (1, 5, 7);</sql><sql name="SQL 7.sql">-- Select the year, species, and weight columns from the table Rodents_Survey
+SELECT
+  year,
+  species,
+  -- Convert the weight from grams to kilograms by dividing by 1000
+  weight / 1000.0 AS weight_in_kg
+FROM
+  Rodents_Survey
+-- Order the result set by the weight_in_kg column in descending order
+ORDER BY
+  weight_in_kg DESC;</sql><sql name="SQL 8.sql">-- Display the three date fields, species, and weight in kilograms (rounded to two decimal places), 
+-- for rodents captured in 2019, ordered alphabetically by the species
+
+SELECT day, month, year, species, ROUND (weight / 1000.0, 2) AS weight_kg
+FROM Rodents_Survey
+WHERE year = 2019
+ORDER BY species;</sql><sql name="SQL 9.sql">--This query will count the number of distinct species in each year 
+-- and display the result in a table with two columns: year and species_count.
+
+SELECT year, COUNT (DISTINCT species) AS species_count
+FROM Rodents_Survey
+GROUP BY year;</sql><sql name="SQL 10.sql">-- This query will calculate the average weight of each species in each year and 
+-- display the result in a table with three columns: year, species, and average_weight.
+
+SELECT year, species, AVG (weight) AS average_weight
+FROM Rodents_Survey
+GROUP BY year, species;</sql><sql name="SQL 11">-- EXECUTING ALL IN 'SQL 1'
+--
+-- At line 1:
+USE
+-- Result: near &quot;USE&quot;: syntax error
+-- EXECUTING ALL IN 'SQL 1'
+--
+-- At line 1:
+-- Create a table named Rodents_Survey with the data fields
+CREATE TABLE Rodents_Survey (
+  year INT,
+  month INT,
+  day INT,
+  species VARCHAR(20),
+  weight INT
+);
+-- Result: query executed successfully. Took 2ms
+-- EXECUTING ALL IN 'SQL 2'
+--
+-- At line 1:
+-- Populate the table with 100 random records
+INSERT INTO Rodents_Survey
+SELECT
+  FLOOR(RAND() * (2023 - 2018 + 1)) + 2018 AS year, -- Random year between 2018 and 2023
+  FLOOR(RAND() * 12) + 1 AS month, -- Random month between 1 and 12
+  FLOOR(RAND() * 28) + 1 AS day, -- Random day between 1 and 28
+  ELT(FLOOR(RAND() * 4) + 1, 'mouse', 'rat', 'squirrel', 'hamster') AS species, -- Random species from the list
+  FLOOR(RAND() * 500) + 1 AS weight -- Random weight between 1 and 500 grams
+FROM
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t1, -- 10 rows
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t2;
+-- Result: no such function: FLOOR
+-- EXECUTING ALL IN 'SQL 2'
+--
+-- At line 1:
+-- Populate the table with 100 random records
+INSERT INTO Rodents_Survey
+SELECT
+  FLOORFUNCT(RAND() * (2023 - 2018 + 1)) + 2018 AS year, -- Random year between 2018 and 2023
+  FLOOR(RAND() * 12) + 1 AS month, -- Random month between 1 and 12
+  FLOOR(RAND() * 28) + 1 AS day, -- Random day between 1 and 28
+  ELT(FLOOR(RAND() * 4) + 1, 'mouse', 'rat', 'squirrel', 'hamster') AS species, -- Random species from the list
+  FLOOR(RAND() * 500) + 1 AS weight -- Random weight between 1 and 500 grams
+FROM
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t1, -- 10 rows
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t2;
+-- Result: no such function: FLOORFUNCT
+-- EXECUTING ALL IN 'SQL 2'
+--
+-- At line 1:
+-- Populate the table with 100 random records
+INSERT INTO Rodents_Survey
+SELECT
+  floorFunc(RAND() * (2023 - 2018 + 1)) + 2018 AS year, -- Random year between 2018 and 2023
+  FLOOR(RAND() * 12) + 1 AS month, -- Random month between 1 and 12
+  FLOOR(RAND() * 28) + 1 AS day, -- Random day between 1 and 28
+  ELT(FLOOR(RAND() * 4) + 1, 'mouse', 'rat', 'squirrel', 'hamster') AS species, -- Random species from the list
+  FLOOR(RAND() * 500) + 1 AS weight -- Random weight between 1 and 500 grams
+FROM
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t1, -- 10 rows
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t2;
+-- Result: no such function: floorFunc
+-- EXECUTING ALL IN 'SQL 2'
+--
+-- At line 1:
+-- Populate the table with 100 random records
+-- SQLite version 3.12 does not support the ELT function
+-- You need to use the CASE expression instead
+INSERT INTO Rodents_Survey
+SELECT
+  ABS(RANDOM() % (2023 - 2018 + 1)) + 2018 AS year, -- Random year between 2018 and 2023
+  ABS(RANDOM() % 12) + 1 AS month, -- Random month between 1 and 12
+  ABS(RANDOM() % 28) + 1 AS day, -- Random day between 1 and 28
+  CASE ABS(RANDOM() % 4) + 1 -- Random species from the list
+    WHEN 1 THEN 'mouse'
+    WHEN 2 THEN 'rat'
+    WHEN 3 THEN 'squirrel'
+    WHEN 4 THEN 'hamster'
+  END AS species,
+  ABS(RANDOM() % 500) + 1 AS weight -- Random weight between 1 and 500 grams
+FROM
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t1, -- 10 rows
+  (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL
+   SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) t2;
+-- Result: query executed successfully. Took 2ms
+-- EXECUTING ALL IN 'SQL 3'
+--
+-- At line 1:
+SELECT * FROM Rodents_Survey
+-- Result: 100 rows returned in 30ms
+-- EXECUTING ALL IN 'SQL 4'
+--
+-- At line 1:
+-- Select the year, month, day, species and weight columns from the table Rodents_Survey
+SELECT
+  year,
+  month,
+  day,
+  species,
+  -- Convert the weight from grams to milligrams by multiplying by 1000
+  weight * 1000 AS weight_in_mg
+FROM
+  Rodents_Survey;
+-- Result: 100 rows returned in 22ms
+-- EXECUTING ALL IN 'SQL 5'
+--
+-- At line 1:
+-- Select the day, month, year, species and weight columns from the table Rodents_Survey
+-- where the weight is greater than 75 g
+SELECT
+  day,
+  month,
+  year,
+  species,
+  -- Convert the weight from grams to kilograms by dividing by 1000
+  weight / 1000.0 AS weight_in_kg
+FROM
+  Rodents_Survey
+WHERE
+  weight &gt; 75;
+-- Result: 86 rows returned in 21ms
+-- EXECUTING ALL IN 'SQL 6'
+--
+-- At line 1:
+-- Select the day, month, year, species columns from the table Rodents_Survey
+-- where the month is 1, 5, or 7
+SELECT
+  day,
+  month,
+  year,
+  species
+FROM
+  Rodents_Survey
+WHERE
+  month IN (1, 5, 7);
+-- Result: 31 rows returned in 11ms
+-- EXECUTING ALL IN 'SQL 7'
+--
+-- At line 1:
+-- Select the year, species, and weight columns from the table Rodents_Survey
+SELECT
+  year,
+  species,
+  -- Convert the weight from grams to kilograms by dividing by 1000
+  weight / 1000.0 AS weight_in_kg
+FROM
+  Rodents_Survey
+-- Order the result set by the weight_in_kg column in descending order
+ORDER BY
+  weight_in_kg DESC;
+-- Result: 100 rows returned in 17ms
+-- EXECUTING ALL IN 'SQL 8'
+--
+-- At line 1:
+SELECT day, month, year, species, ROUND (weight / 1000.0, 2) AS weight_kg
+FROM Rodents_Survey
+WHERE year = 1999
+ORDER BY species;
+-- Result: 0 rows returned in 5ms
+-- At line 1:
+SELECT day, month, year, species, ROUND (weight / 1000.0, 2) AS weight_kg
+FROM Rodents_Survey
+WHERE year = 1999
+ORDER BY species;
+-- Result: 0 rows returned in 5ms
+-- EXECUTING ALL IN 'SQL 8'
+--
+-- At line 1:
+SELECT day, month, year, species, ROUND (weight / 1000.0, 2) AS weight_kg
+FROM Rodents_Survey
+WHERE year = 2019
+ORDER BY species;
+-- Result: 16 rows returned in 70724ms
+-- At line 1:
+SELECT day, month, year, species, ROUND (weight / 1000.0, 2) AS weight_kg
+FROM Rodents_Survey
+WHERE year = 2019
+ORDER BY species;
+-- Result: 16 rows returned in 14ms
+-- EXECUTING ALL IN 'SQL 10'
+--
+-- At line 1:
+-- This query will calculate the average weight of each species in each year and 
+-- display the result in a table with three columns: year, species, and average_weight.
+
+SELECT year, species, AVG (weight) AS average_weight
+FROM Rodents_Survey
+GROUP BY year, species;
+-- Result: 23 rows returned in 10ms
+-- EXECUTING ALL IN 'SQL 11'
+--
+-- At line 1:
+-- This query will display the species and weight columns from the Rodents_Survey table
+-- for all the records, ordered by Species, Weight
+
+SELECT species, weight
+FROM Rodents_Survey
+ORDER BY species, weight DESC;
+-- Result: 100 rows returned in 13ms
+</sql><sql name="SQL 12">SELECT species, weight
+FROM Rodents_Survey
+ORDER BY species, weight DESC;
+-- Result: 100 rows returned in 13ms
+</sql><current_tab id="11"/></tab_sql></sqlb_project>
