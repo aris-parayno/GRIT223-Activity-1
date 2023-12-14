@@ -1,3 +1,6 @@
+-- Write a query that returns year, species, and weight in kg from the surveys table, sorted with
+-- the largest weights at the top.
+
 -- Select the year, species, and weight columns from the table Rodents_Survey
 SELECT
   year,
